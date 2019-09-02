@@ -54,7 +54,7 @@ class PID {
   double sq_cte_= 0;
 
   double count_ = 0; // record the loop update the cte error
-  std::vector<double> errors{999.0,999.0,999.0};
+  std::vector<double> errs_{999.0,999.0,999.0};
 
   /**
    * PID Coefficients

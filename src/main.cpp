@@ -41,15 +41,16 @@ int main() {
    */
   // ----------------------------------------------------------------------
   // pid.Init(0.15, 2.5,0.0);
-  //std::vector<double> init_p{0.2,3,0.0};
-  std::vector<double> init_p{0,3,0.0};
-  std::vector<double> dp{1.0,1.0,1.0};
+  std::vector<double> init_p{0.2,3,0.0};
+  // std::vector<double> init_p{0,3,0.0};
+  std::vector<double> dp{1,1,1};
   pid.Init(init_p);
 
   int flag = 0;
   int iteration = 0; // keep record of the iteartion of swiddle
   int loop = 0;
   double best_err = 0.0;
+  double best_loop = 0.0;
 
   // control to twiddle
   std::vector<int> increase{1,1,1};
@@ -86,12 +87,13 @@ int main() {
           pid.UpdateError(cte); // update the internel error state
           steer_value = -pid.TotalError(); // calculate the stearing using PID control
           
-          std::cout << "best Error: " << pid.GetAerr()<< "cout:" << pid.count_<< 
+          std::cout << "best loop: " << best_loop<<"cout:" << pid.count_<< 
                         " "<<pid.sq_cte_ << std::endl;
           // get the sum of dp
           auto total = std::accumulate(dp.begin(),dp.end(),0.0);
           std::cout << "cte: "<< fabs(cte) << "sped: " << speed<< std::endl;
-
+            
+          /*
           // probabilty car is off track calculate twiddle and rest the game
           if(total > 0.2){ // only swiddle if larger than thresh hold
               auto avg_err = pid.GetAerr(); // get the average cte sqaure error
@@ -101,17 +103,19 @@ int main() {
                         dp[0]<< ","<<dp[1]<<","<<dp[2]<<std::endl;
               std::cout << "prams: "<<pram[0] << " " << pram[1] << " " << pram[2] <<std::endl;
 
-              if(fabs(cte) > 2  && loop > 1000) {
-                loop = 0;
+              if(fabs(cte) > 2) {
                 std::vector<double> new_pram;
-                if(!flag) {best_err = 9999;} // first time in the loop init best error
+                if(!flag) {best_loop= 0;} // first time in the loop init best error
                 auto round_ind = iteration%1; // this round index update
     
                 if (increase[round_ind]) {
-                    if(avg_err < best_err) {
-                        best_err = avg_err;
+                    if(loop > best_loop) {
+                        best_loop = loop;
                         dp[round_ind] *= 1.1;
 
+                        increase[round_ind] = 1;  // mark previous action increaes 
+                        decrease[round_ind] = 0;
+                        
                         pram[round_ind] += dp[round_ind];
                     }else {
                         pram[round_ind] -= 2*dp[round_ind];
@@ -122,13 +126,14 @@ int main() {
                 }
     
                 if(decrease[round_ind]) {
-                    if(avg_err < best_err) { // error imporves
-                        best_err = avg_err;
+                    if(loop > best_loop) { // error imporves
+                        best_loop = loop;
                         dp[round_ind] *= 1.1;
+                        pram[round_ind] -= dp[round_ind];
 
                     } else {
                         pram[round_ind] += dp[round_ind];
-                        dp[round_ind] *= 0.9;
+                        //dp[round_ind] *= 0.9;
 
                     }
                     increase[round_ind] = 1;  // mark previous action increaes 
@@ -143,6 +148,7 @@ int main() {
                 ++iteration;
                 ++flag; 
 
+                loop = 0;
                 // reset simulator
                 std::string msg("42[\"reset\", {}]");
                 ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -153,6 +159,7 @@ int main() {
               std::cout << " ------------------------" << std::endl;
               std::cout<< "stablinsed :" << temp[0] << " " << temp[1] << " " << temp[2] << '\n';
           }
+          */
           ++loop;
           // DEBUG
           // std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
