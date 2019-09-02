@@ -8,7 +8,7 @@ The procedure are implemented as in the PID class for calculating the steering v
 
 ### Describe the effect each of the P, I, D components had in your implementation.
 * P: the bigger proportiona part of the control is the faster the steer back to the track if deviate , but with bigger extent of swinning.
-[![Audi R8]](https://youtu.be/EZXs4B5YHc8)
+[link text](https://youtu.be/EZXs4B5YHc8)
 
 * D: the differential part of the control ,which would smoother the p part of the steering ,when approaching the target track, would reduce the chance of overshoot and smooth the manourver for P portion part of the steering as well.
 * I: the integral part of the control, would add more correction to the steer if the accumulated error is big. so when error gets bigger and bigger the over correction would gets bigger as well results in siwng harder.
