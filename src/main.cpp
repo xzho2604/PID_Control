@@ -42,10 +42,10 @@ int main() {
   // ----------------------------------------------------------------------
   // pid.Init(0.15, 2.5,0.0);
   std::vector<double> init_p{0.2,3,0.0};
-  // std::vector<double> init_p{0,3,0.0};
-  std::vector<double> dp{1,1,1};
+  // std::vector<double> init_p{2,5,0.04};
   pid.Init(init_p);
-
+/*
+  std::vector<double> dp{1,1,1};
   int flag = 0;
   int iteration = 0; // keep record of the iteartion of swiddle
   int loop = 0;
@@ -55,6 +55,7 @@ int main() {
   // control to twiddle
   std::vector<int> increase{1,1,1};
   std::vector<int> decrease{0,0,0};
+*/
   // ----------------------------------------------------------------------
 
   h.onMessage([&](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
@@ -83,88 +84,9 @@ int main() {
            * NOTE: Feel free to play around with the throttle and speed.
            *   Maybe use another PID controller to control the speed!
            */
-          //std::cout << " outside cte:&&&&&&&&&" << cte << std::endl;
           pid.UpdateError(cte); // update the internel error state
           steer_value = -pid.TotalError(); // calculate the stearing using PID control
           
-          std::cout << "best loop: " << best_loop<<"cout:" << pid.count_<< 
-                        " "<<pid.sq_cte_ << std::endl;
-          // get the sum of dp
-          auto total = std::accumulate(dp.begin(),dp.end(),0.0);
-          std::cout << "cte: "<< fabs(cte) << "sped: " << speed<< std::endl;
-            
-          /*
-          // probabilty car is off track calculate twiddle and rest the game
-          if(total > 0.2){ // only swiddle if larger than thresh hold
-              auto avg_err = pid.GetAerr(); // get the average cte sqaure error
-              auto pram = pid.GetCo(); // get the p array of coefficients
-
-              std::cout << "=================total dp:" << total << "---" <<
-                        dp[0]<< ","<<dp[1]<<","<<dp[2]<<std::endl;
-              std::cout << "prams: "<<pram[0] << " " << pram[1] << " " << pram[2] <<std::endl;
-
-              if(fabs(cte) > 2) {
-                std::vector<double> new_pram;
-                if(!flag) {best_loop= 0;} // first time in the loop init best error
-                auto round_ind = iteration%1; // this round index update
-    
-                if (increase[round_ind]) {
-                    if(loop > best_loop) {
-                        best_loop = loop;
-                        dp[round_ind] *= 1.1;
-
-                        increase[round_ind] = 1;  // mark previous action increaes 
-                        decrease[round_ind] = 0;
-                        
-                        pram[round_ind] += dp[round_ind];
-                    }else {
-                        pram[round_ind] -= 2*dp[round_ind];
-
-                        decrease[round_ind] = 1; // remmeber prevous step decrease 
-                        increase[round_ind] = 0;
-                    } 
-                }
-    
-                if(decrease[round_ind]) {
-                    if(loop > best_loop) { // error imporves
-                        best_loop = loop;
-                        dp[round_ind] *= 1.1;
-                        pram[round_ind] -= dp[round_ind];
-
-                    } else {
-                        pram[round_ind] += dp[round_ind];
-                        //dp[round_ind] *= 0.9;
-
-                    }
-                    increase[round_ind] = 1;  // mark previous action increaes 
-                    decrease[round_ind] = 0;
-
-                    pram[round_ind] += dp[round_ind];
-                }
-
-                PID pid_new;
-                pid_new.Init(pram);
-                pid = pid_new;
-                ++iteration;
-                ++flag; 
-
-                loop = 0;
-                // reset simulator
-                std::string msg("42[\"reset\", {}]");
-                ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-              } 
-              
-          } else { // indicate of the end of the fine turn p
-              auto temp = pid.GetCo();
-              std::cout << " ------------------------" << std::endl;
-              std::cout<< "stablinsed :" << temp[0] << " " << temp[1] << " " << temp[2] << '\n';
-          }
-          */
-          ++loop;
-          // DEBUG
-          // std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
-          //          << std::endl;
-
           // --------------------------------------------------------------------
           json msgJson;
           msgJson["steering_angle"] = steer_value;
