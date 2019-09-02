@@ -7,12 +7,21 @@ The code compiles and run.
 The procedure are implemented as in the PID class for calculating the steering value
 
 ### Describe the effect each of the P, I, D components had in your implementation.
-* P: the bigger proportiona part of the control is the faster the steer back to the track if deviate , but with bigger extent of swinning.
-[P Control](https://youtu.be/EZXs4B5YHc8)
+* P: the bigger proportiona part of the control is the faster the steer back to the track if deviate , but with bigger extent of swinning. <br/>
+[P Control Video Link](https://youtu.be/EZXs4B5YHc8)
 
-* D: the differential part of the control ,which would smoother the p part of the steering ,when approaching the target track, would reduce the chance of overshoot and smooth the manourver for P portion part of the steering as well.
-* I: the integral part of the control, would add more correction to the steer if the accumulated error is big. so when error gets bigger and bigger the over correction would gets bigger as well results in siwng harder.
+* D: the differential part of the control ,which would smoother the p part of the steering ,when approaching the target track, would reduce the chance of overshoot and smooth the manourver for P portion part of the steering as well. <br/>
+[D Control Video Link](https://youtu.be/VsJjS7m0DFk) 
 
+* I: the integral part of the control, would add more correction to the steer if the accumulated error is big. so when error gets bigger and bigger the over correction would gets bigger as well results in siwng harder.<br/>
+[I Control Video Link](https://youtu.be/pkH-x_3TDmo) 
+
+### Describe how the final hyperparameters were chosen.
+Since the Twiggle method, needs many iteration of the full run of a loop, and it is time consuming. Also we need to define when the full run terminated is appropriate for adjust prametres and update erros.<br/>
+In this case , we have already know the effects of the P , I , D do we could do a reasonable initial value and observe the behaviour of the car do and then ajust the parameter according to what they do describled above. In this case I have started with (p = 0.5,d=4,i =0,04) , then I find out the further the car drive the more swing it gets, since i would mostly be useful when there is kind of alignment issue which is not useful here ,so I set i = 0.0. Performance did improves , but still not smooth , then after some manual adjustment, it turns out that the final parameter of (0.2,3,0.0) works really well.
+
+### The vehicle must successfully drive a lap around the track.
+The car drives aroudn the lap without any problem
 
 
 
